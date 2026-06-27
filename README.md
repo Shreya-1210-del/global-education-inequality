@@ -11,7 +11,7 @@ Analysed UNESCO + World Bank data across 190+ countries (2000–2023) to uncover
 
 **Tech Stack:** Python, Pandas, Plotly, Seaborn, Streamlit
 
-**Live Dashboard:** [Your Streamlit Cloud Link Here Once Deployed]
+**Live Dashboard:** https://global-education-inequality-nynysrztvyo3z4rzl8y7qx.streamlit.app/
 
 **How to Run:**
 ```bash
