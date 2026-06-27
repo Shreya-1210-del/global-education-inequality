@@ -141,47 +141,52 @@ else:
     st.warning(f"No primary enrollment timeline records were reported for {selected_country} in the tracking database.")
 
 st.write("---")
-
 # ==========================================
 # 7. SECTION 5: REGION COMPARISON GENDER GAP
 # ==========================================
 st.header("⚖️ Macroeconomic Disparity: Regional Gender Parity")
 
 if selected_regions:
-    # Filter for rows matching any of the chosen regions
+    # 1. Filter for rows matching any of the chosen regions
     df_regional_gap = df[df["Region"].isin(selected_regions)].copy()
     
-    # Isolate records where gender data actually exists
+    # 2. Drop rows missing gender parity values completely
     df_regional_gap = df_regional_gap[df_regional_gap["school_enrollment_primary_and_secondary"].notna()].copy()
 
     if not df_regional_gap.empty:
-        # Find the max year available for these specific regions
-        latest_gap_year = int(df_regional_gap["Year"].max())
-        
-        # Strictly isolate that single year's snapshot
-        df_regional_latest = df_regional_gap[df_regional_gap["Year"] == latest_gap_year].copy()
+        # 3. CRITICAL FIX: Sort chronologically and extract the LATEST known year per individual country
+        df_regional_latest = (
+            df_regional_gap.sort_values(by="Year")
+            .groupby("Country Name")
+            .last()
+            .reset_index()
+        )
 
-        # Compute the absolute distance from perfect parity (1.0)
+        # 4. Compute absolute distance from perfect parity (1.0)
         df_regional_latest["gap_distance"] = (1.0 - df_regional_latest["school_enrollment_primary_and_secondary"]).abs()
         
-        # Sort and take the top 10 unique countries
+        # 5. Extract the top 10 unique widest gaps
         df_top10_regional = df_regional_latest.sort_values(by="gap_distance", ascending=False).head(10)
 
         if not df_top10_regional.empty:
+            # Construct a dynamic subtitle showing the range of data years represented
+            year_min = int(df_top10_regional["Year"].min())
+            year_max = int(df_top10_regional["Year"].max())
+            
             fig_regional_gap = px.bar(
                 df_top10_regional,
                 x="school_enrollment_primary_and_secondary",
                 y="Country Name",
                 orientation="h",
                 color="Country Name",
-                title=f"Top 10 Widest Gender Parity Gaps in Selected Regions ({latest_gap_year})",
+                title=f"Top 10 Widest Gender Parity Gaps in Selected Regions ({year_min}-{year_max})",
                 labels={"school_enrollment_primary_and_secondary": "Gender Parity Index Value", "Country Name": "Country"},
             )
             fig_regional_gap.add_vline(x=1.0, line_dash="dash", line_color="black", annotation_text="Parity (1.0)")
             fig_regional_gap.update_layout(
                 margin={"r": 20, "t": 50, "l": 40, "b": 40}, 
                 showlegend=False,
-                yaxis={'categoryorder':'total descending'} # Keeps bars sorted beautifully
+                yaxis={'categoryorder':'total descending'}
             )
             st.plotly_chart(fig_regional_gap, use_container_width=True)
             st.caption("Figure 3: Horizontal comparison ranking the worst ten gender parity index spreads across selected geographic subsets. A baseline value of 1.0 indicates perfect gender parity.")
