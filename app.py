@@ -121,7 +121,7 @@ st.write("---")
 # ==========================================
 # 6. SECTION 4: COUNTRY FILTER & TIMELINE EXPLORER
 # ==========================================
-st.header(f"🔍 Country Deep-Dive: {selected_country}")
+st.header(f"Country Deep-Dive: {selected_country}")
 
 df_filtered_country = df[df["Country Name"] == selected_country].copy().sort_values(by="Year")
 
@@ -144,7 +144,7 @@ st.write("---")
 # ==========================================
 # 7. SECTION 5: REGION COMPARISON GENDER GAP
 # ==========================================
-st.header("⚖️ Macroeconomic Disparity: Regional Gender Parity")
+st.header(" Macroeconomic Disparity: Regional Gender Parity")
 
 if selected_regions:
     # 1. Filter for rows matching any of the chosen regions
@@ -200,7 +200,7 @@ else:
 # ==========================================
 # 8. SECTION 6: INCOME GROUP DEEP DIVE CRISIS CHART
 # ==========================================
-st.header("🚨 Demographic Profile: Out-of-School Absolute Counts")
+st.header(" Demographic Profile: Out-of-School Absolute Counts")
 
 df_crisis_clean = df[df["children_out_of_school_primary"].notna()].copy()
 
