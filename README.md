@@ -17,6 +17,10 @@ Analysed UNESCO + World Bank data across 190+ countries (2000–2023) to uncover
 ```bash
 pip install pandas plotly openpyxl
 python -m streamlit run app.py
+```
 
 ### Dashboard Preview:
 ![Dashboard Preview](dashboard.png)
+
+
+
